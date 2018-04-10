@@ -3,14 +3,14 @@ const path = require('path');
 const publicDir = path.join(__dirname, 'public');
 module.exports = {
   mode: 'development',
-  entry: './src/index.js',
+  entry: './src/index.jsx',
   output: {
     path: publicDir,
     filename: 'bundle.js',
   },
   module: {
     rules: [{
-      test: /\.js$/,
+      test: /\.jsx?$/,
       exclude: /node_modules/,
       loader: 'babel-loader',
       options: {
