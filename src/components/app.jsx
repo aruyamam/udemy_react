@@ -1,28 +1,64 @@
 import React, { Component } from 'react';
-import Greeting from './greeting.jsx';
+
+import SearchForm from './SearchForm.jsx';
+import GeocodeResult from './GeocordResult.jsx';
+import Map from './Map.jsx';
+
+import { geocode } from '../domain/Geocoder';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: 'John',
+      location: {
+        lat: 35.6585805,
+        lng: 139.7454329,
+      }
     };
   }
 
-  handleNameChange(name) {
-    this.setState({ name });
+  setErrorMessage(message) {
+    this.setState({
+      address: message,
+      location: {
+        lat: 0,
+        lng: 0,
+      },
+    });
+  }
+
+  handlePlaceSubmit(place) {
+    geocode(place)
+      .then(({ status, address, location }) => {
+        switch (status) {
+          case 'OK': {
+            this.setState({ address, location });
+            break;
+          }
+          case 'ZERO_RESULTS': {
+            this.setErrorMessage('結果が見つかりませんでした');
+            break;
+          }
+          default: {
+            this.setErrorMessage('エラーが発生しました');
+          }
+        }
+      })
+      .catch(() => {
+        this.setErrorMessage('通信に失敗しました');
+      });
   }
 
   render() {
     return (
       <div>
-        <input
-          type="text"
-          value={this.state.name}
-          onChange={e => this.handleNameChange(e.target.value)}
+        <h1>緯度経度検索</h1>
+        <SearchForm onSubmit={place => this.handlePlaceSubmit(place)} />
+        <GeocodeResult
+          address={this.state.address}
+          location={this.state.location}
         />
-        <button onClick={() => this.handleNameChange('Bob')}>I am Bob</button>
-        <Greeting name={this.state.name} />
+        <Map location={this.state.location} />
       </div>
     );
   }
