@@ -1,6 +1,7 @@
 const path = require('path');
 
 const publicDir = path.join(__dirname, 'public');
+
 module.exports = {
   mode: 'development',
   entry: './src/index.jsx',
@@ -9,27 +10,27 @@ module.exports = {
     filename: 'bundle.js',
   },
   module: {
-    rules: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader',
-      resolve: {
-        extensions: ['.js', '.jsx'],
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        resolve: {
+          extensions: ['.js', '.jsx'],
+        },
+        options: {
+          presets: ['react', 'env'],
+        },
       },
-      options: {
-        presets: ['react', 'env'],
+      {
+        test: /\.s?css$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
-    }, {
-      test: /\.s?css$/,
-      use: [
-        'style-loader',
-        'css-loader',
-        'sass-loader',
-      ],
-    }],
+    ],
   },
   devServer: {
     historyApiFallback: true,
     contentBase: publicDir,
+    disableHostCheck: true,
   },
 };
