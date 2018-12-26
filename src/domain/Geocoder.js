@@ -13,7 +13,6 @@ export const geocode = place =>
       },
     })
     .then((results) => {
-      console.log(results);
       const { data } = results;
       const { status } = data;
       const result = data.results[0];
