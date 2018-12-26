@@ -1,18 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { setPlace, startSearch } from '../actions';
 
-import { geocode } from '../domain/Geocoder';
-// import { searchHotelByLocation } from '../domain/HotelRepository';
-
-const SearchForm = ({ place, onPlaceChange, onSubmit }) => (
+const SearchForm = ({ place, setPlace, startSearch }) => (
   <form
     className="search-form"
     onSubmit={(e) => {
       e.preventDefault();
-      console.log('submit');
-
-      onSubmit(place);
+      startSearch();
     }}
   >
     <input
@@ -22,7 +18,7 @@ const SearchForm = ({ place, onPlaceChange, onSubmit }) => (
       value={place}
       onChange={(e) => {
         e.preventDefault();
-        onPlaceChange(e.target.value);
+        setPlace(e.target.value);
       }}
     />
     <input className="submit-button" type="submit" value="検索" />
@@ -31,50 +27,13 @@ const SearchForm = ({ place, onPlaceChange, onSubmit }) => (
 
 SearchForm.propTypes = {
   place: PropTypes.string.isRequired,
-  onPlaceChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  setPlace: PropTypes.func.isRequired,
+  startSearch: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  place: state.place,
-});
-
-const mapDispatchToProps = dispatch => ({
-  onPlaceChange: place => dispatch({ type: 'CHANGE_PLACE', place }),
-  onSubmit: (place) => {
-    geocode(place).then(({ status, address, location }) => {
-      console.log(status);
-      switch (status) {
-        case 'OK': {
-          dispatch({
-            type: 'GEOCODE_FETCHED',
-            address,
-            location,
-          });
-          // return searchHotelByLocation(location);
-          break;
-        }
-        case 'ZERO_RESULTS': {
-          // this.setErrorMessage('結果が見つかりませんでした');
-          break;
-        }
-        default: {
-          // this.setErrorMessage('エラーが発生しました');
-        }
-      }
-      return [];
-    });
-    // .then((hotels) => {
-    //   this.setState({ hotels: sortedHotels(hotels, this.state.sortKey) });
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    //   this.setErrorMessage('通信に失敗しました');
-    // });
-  },
-});
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+  state => ({
+    place: state.place,
+  }),
+  { setPlace, startSearch },
 )(SearchForm);
