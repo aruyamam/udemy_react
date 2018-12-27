@@ -5,8 +5,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-// import App from './components/App';
-import SearchPage from './components/SearchPage';
+import App from './components/App';
 import reducer from './reducers/';
 
 import './stylesheets/index.scss';
@@ -15,7 +14,7 @@ const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 
 ReactDOM.render(
   <Provider store={store}>
-    <SearchPage history={history} location={location} />
+    <App />
   </Provider>,
   document.querySelector('.container'),
 );

@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { setPlace, startSearch } from '../actions';
 
-const SearchForm = ({ place, setPlace, startSearch }) => (
+const SearchForm = ({
+  history, place, setPlace, startSearch,
+}) => (
   <form
     className="search-form"
     onSubmit={(e) => {
       e.preventDefault();
+      history.push(`/?place=${place}`);
       startSearch();
     }}
   >
@@ -26,6 +29,7 @@ const SearchForm = ({ place, setPlace, startSearch }) => (
 );
 
 SearchForm.propTypes = {
+  history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   place: PropTypes.string.isRequired,
   setPlace: PropTypes.func.isRequired,
   startSearch: PropTypes.func.isRequired,
